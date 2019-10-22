@@ -30,7 +30,7 @@ for idx in range(len(contours)):
     if r > 0.45 and w > 8 and h > 8:
         cv2.rectangle(rgb, (x, y), (x+w-1, y+h-1), (0, 255, 0), 2)
 
-        cv2.imshow('rects', rgb)
+        cv2.imshow('Boxes nas palavras', rgb)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -29,7 +29,7 @@ ret, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
 # cv2.imshow('threshold', thresh)
 
 # dilação
-kernel = np.ones((9, 15), np.uint8)
+kernel = np.ones((5, 20), np.uint8)
 img_dilation = cv2.dilate(thresh, kernel, iterations=1)
 # cv2.imshow('dilated', img_dilation)
 
@@ -43,7 +43,7 @@ else:
     im2, ctrs, hier = cv2.findContours(img_dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 # ordena contornos
-sorted_ctrs = sorted(ctrs, key=lambda ctr: cv2.boundingRect(ctr)[0])
+sorted_ctrs = sorted(ctrs, key=lambda ctr: cv2.boundingRect(ctr)[1])
 
 # tentar ordenar de cima para baixo
 # sorted_ctrs = sorted(ctrs, key=lambda ctr: cv2.boundingRect(ctr[0][1]))
@@ -60,10 +60,7 @@ for i, ctr in enumerate(sorted_ctrs):
         Estudando extras
         # add the bounding box coordinates and OCR'd text to the list
         # of results
-        results.append(((startX, startY, endX, endY), text))
-
-        # sort the results bounding box coordinates from top to bottom
-        results = sorted(results, key=lambda r: r[0][1])
+        results.append(((startX, startY, endX, endY), text))q
         '''
         print text
         voiceEngine.say(text)
