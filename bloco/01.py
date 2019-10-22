@@ -26,10 +26,10 @@ def get_string(img_path):
     img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31, 2)
 
     # salva imagem apos threshold
-    cv2.imwrite("threshold.png", img)
+    cv2.imshow("threshold", img)
 
     # reconhece texto com pytesseract
-    result = pytesseract.image_to_string(Image.open("threshold.png"))
+    result = pytesseract.image_to_string(img)
 
     # remove o temp
     #os.remove(temp)
