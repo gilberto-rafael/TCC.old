@@ -1,4 +1,6 @@
 # coding: utf-8
+# examples source by Adrian Rosebrock, pyimagesearch
+
 from imutils.video import VideoStream
 from imutils.video import FPS
 from imutils.object_detection import non_max_suppression
@@ -8,8 +10,10 @@ import imutils
 import time
 import cv2
 import pytesseract
+import pyttsx3
 import east
 
+engine = pyttsx3.init()
 
 def decode_predictions(scores, geometry):
 	# pega o numero de linhas e colunas para setar os boxes e possíveis correspondências de texto
@@ -33,8 +37,7 @@ def decode_predictions(scores, geometry):
 			if scoresData[x] < args["min_confidence"]:
 				continue
 
-			# compute the offset factor as our resulting feature
-			# maps will be 4x smaller than the input image
+			# offset 4 vezes menor que a imagem de entrada
 			(offsetX, offsetY) = (x * 4.0, y * 4.0)
 
 			# extrai o ângulo de rotaço da possibilidade e extrai seno e coseno
@@ -42,8 +45,7 @@ def decode_predictions(scores, geometry):
 			cos = np.cos(angle)
 			sin = np.sin(angle)
 
-			# use the geometry volume to derive the width and height
-			# of the bounding box
+			# usa geometria para definir altura x largura das boxes
 			h = xData0[x] + xData2[x]
 			w = xData1[x] + xData3[x]
 
@@ -54,8 +56,7 @@ def decode_predictions(scores, geometry):
 			startX = int(endX - w)
 			startY = int(endY - h)
 
-			# add the bounding box coordinates and probability score
-			# to our respective lists
+			# adiciona as boxes e as probabilidades na lista
 			rects.append((startX, startY, endX, endY))
 			confidences.append(scoresData[x])
 
@@ -155,19 +156,7 @@ while True:
 		# desenha as boxes no vídeo
 		cv2.rectangle(orig, (startX, startY), (endX, endY), (255, 0, 0), 2)
 
-		''' EXTRAS
-
-		# in order to obtain a better OCR of the text we can potentially
-		# apply a bit of padding surrounding the bounding box -- here we
-		# are computing the deltas in both the x and y directions
-		dX = int((endX - startX) * args["padding"])
-		dY = int((endY - startY) * args["padding"])
-
-		# apply padding to each side of the bounding box, respectively
-		startX = max(0, startX - dX)
-		startY = max(0, startY - dY)
-		endX = min(origW, endX + (dX * 2))
-		endY = min(origH, endY + (dY * 2))
+		#''' EXTRAS
 
 		# extract the actual padded ROI
 		roi = orig[startY:endY, startX:endX]
@@ -185,7 +174,7 @@ while True:
 		results.append(((startX, startY, endX, endY), text))
 
 	# sort the results bounding box coordinates from top to bottom
-	results = sorted(results, key=lambda r: r[0][1])
+	results = sorted(results, key=lambda r: r[1])
 	# FIM EXTRAS '''
 
 	# atualiza contador de FPS
@@ -197,19 +186,12 @@ while True:
 	# loop nos resultados
 	for ((startX, startY, endX, endY), text) in results:
 		# exibe palavras reconhecidas
-		print("========")
+		#print("========")
 		text = text.encode('utf-8')
-		print("{}\n".format(text))
-		# strip out non-ASCII text so we can draw the text on the image
-		# using OpenCV, then draw the text and a bounding box surrounding
-		# the text region of the input image
-		# text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
-		# output = orig.copy()
-		# cv2.rectangle(output, (startX, startY), (endX, endY), (0, 0, 255), 2)
-		# cv2.putText(output, text, (startX, startY - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
+		print("{} ".format(text))
+		engine.say(text)
+		engine.runAndWait()
 
-		# exibe saída com não reconhecidos
-		#cv2.imshow("Tela 2", output)
 
 	# sai do loop se pressionar 'q'
 	if key == ord("q"):
