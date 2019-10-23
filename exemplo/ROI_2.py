@@ -18,7 +18,7 @@ voiceEngine.setProperty('rate', 210)
 voiceEngine.setProperty('volume', 2)
 
 # importa imagem
-image = cv2.imread('1.jpg')
+image = cv2.imread('111.jpg')
 
 # escala de cinza
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

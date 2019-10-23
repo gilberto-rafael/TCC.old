@@ -99,7 +99,7 @@ if not args.get("video", False):
 else:
 	vs = cv2.VideoCapture("0.mov")
 
-# estimativa da taxa de frasnferência dos FPS
+# estimativa da taxa de fransferência dos FPS
 fps = FPS().start()
 
 # loop nos frames extraídos do vídeo
@@ -115,6 +115,9 @@ while True:
 
 	# redimensiona o frame mantendo a proporção
 	frame = imutils.resize(frame, width=1000)
+
+	# define area de interesse no meio da captura apenas
+	frame = frame[300:700, 0:1000]
 	orig = frame.copy()
 
 	(origH, origW) = frame.shape[:2]
@@ -129,9 +132,8 @@ while True:
 	# redimensiona o frame ignorando a proporção
 	frame = cv2.resize(frame, (newW, newH))
 
-	# controi o BLOB do frame e altera o input do modelo para obter duas saídas
-	blob = cv2.dnn.blobFromImage(frame, 1.0, (newW, newH),
-		(123.68, 116.78, 103.94), swapRB=True, crop=False)
+	# constroi o BLOB do frame e altera o input do modelo para obter duas saídas
+	blob = cv2.dnn.blobFromImage(frame, 1.0, (newW, newH), (123.68, 116.78, 103.94), swapRB=True, crop=False)
 	net.setInput(blob)
 	(scores, geometry) = net.forward(layerNames)
 
